@@ -1,8 +1,11 @@
 let players = ["x", "o"];
 let activePlayer = 0;
+// стартовый код:
+
+let board;
 
 function startGame() {
-  const board = [
+  board = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
@@ -12,9 +15,119 @@ function startGame() {
 }
 
 function click(row, col) {
+  board[row][col] = activePlayer;
+  console.log(board[row][col]);
   renderBoard(board);
 }
+startGame();
+// click(targetData.row, targetData.col);
 
+// Функция для проверки победы
+const checkWin = () => {
+  // Проверяем все возможные комбинации, где можно выиграть
+  const winCombinations = [
+    // Горизонтальные линии
+    [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+    ],
+    [
+      [1, 0],
+      [1, 1],
+      [1, 2],
+    ],
+    [
+      [2, 0],
+      [2, 1],
+      [2, 2],
+    ],
+    // Вертикальные линии
+    [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+    ],
+    [
+      [0, 2],
+      [1, 2],
+      [2, 2],
+    ],
+    // Диагональные линии
+    [
+      [0, 0],
+      [1, 1],
+      [2, 2],
+    ],
+    [
+      [0, 2],
+      [1, 1],
+      [2, 0],
+    ],
+  ];
+
+  // Проверяем каждую комбинацию
+  for (let i = 0; i < winCombinations.length; i++) {
+    const [a, b, c] = winCombinations[i];
+    if (
+      board[a[0]][a[1]] === board[b[0]][b[1]] &&
+      board[b[0]][b[1]] === board[c[0]][c[1]] &&
+      board[a[0]][a[1]] !== ""
+    ) {
+      return true; // Если находим победную комбинацию, возвращаем true
+    }
+  }
+
+  return false; // Если не нашли победную комбинацию, возвращаем false
+};
+
+// Функция для проверки ничьи
+const checkDraw = () => {
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j] === "") {
+        return false; // Если находим пустую ячейку, игра не окончена
+      }
+    }
+  }
+
+  return true; // Если все ячейки заполнены, игра окончена
+};
+
+// Функция для хода игрока
+const makeMove = (row, col) => {
+  // Проверяем, является ли ячейка пустой
+  if (board[row][col] === "") {
+    board[row][col] = currentPlayer; // Ставим знак текущего игрока в ячейку
+    // Проверяем, есть ли победитель или ничья
+    if (checkWin()) {
+      console.log(`Игрок ${currentPlayer} победил!`);
+      // Сбрасываем поле
+      resetBoard();
+    } else if (checkDraw()) {
+      console.log("Ничья");
+      // Сбрасываем поле
+      resetBoard();
+    } else {
+      // Меняем текущего игрока
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+    }
+  } else {
+    console.log("Ячейка уже занята! Попробуйте еще раз.");
+  }
+};
+
+// Так же вы должны в функции click записывать символ текущего игрока который делает ход  а вы при клике просто записываете пустое игровое поле
+
+// Чтобы обратиться к ячеке по которой был совершен клик используйте аргументы вашей функции click (row или col) в качестве индексов для вашего двумерного массива. board
+
+// И далее описывайте условия победы
+// click(1, 2);
 // function showWinner(winner)
 
 //   Вам нужно реализовать две основные функции:
