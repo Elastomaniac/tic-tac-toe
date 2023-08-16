@@ -9,7 +9,11 @@ let board = [
 
 function startGame() {
   activePlayer = players[0];
-
+  board = [
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', ''],
+  ];
   renderBoard(board);
 }
 
@@ -17,7 +21,6 @@ function click(row, col) {
   board[row][col] = activePlayer;
 
   renderBoard(board);
-  isWin(activePlayer);
   isWin(activePlayer);
   setActivePlayer();
 }
@@ -30,80 +33,36 @@ function getActivePlayer() {
   return activePlayer === 'x' ? 0 : 1;
 }
 
-function isWin(player) {
-  // по горизонтали
-  const case1 =
-    board[0][0] === player && board[0][1] === player && board[0][2] === player;
-  const case2 =
-    board[1][0] === player && board[1][1] === player && board[1][2] === player;
-  const case3 =
-    board[2][0] === player && board[2][1] === player && board[2][2] === player;
+// Проверка вертикали и горизонтали
+function checkRowsAndColumns(player) {
+  for (let i = 0; i < 3; i++) {
+    if (
+      (board[i][0] === player &&
+        board[i][1] === player &&
+        board[i][2] === player) ||
+      (board[0][i] === player &&
+        board[1][i] === player &&
+        board[2][i] === player)
+    ) {
+      showWinner(getActivePlayer());
+      return;
+    }
+  }
+}
 
-  // по вертикали
-  const case4 =
-    board[0][0] === player && board[1][0] === player && board[2][0] === player;
-  const case5 =
-    board[0][1] === player && board[1][1] === player && board[2][1] === player;
-  const case6 =
-    board[0][2] === player && board[1][2] === player && board[2][2] === player;
-
-  //по диагонали
-  const case7 =
+// Проверка диагоналей
+function checkDiagonals(player) {
+  const diagonal1 =
     board[0][0] === player && board[1][1] === player && board[2][2] === player;
-  const case8 =
+  const diagonal2 =
     board[2][0] === player && board[1][1] === player && board[0][2] === player;
 
-  if (case1 || case2 || case3 || case4 || case5 || case6 || case7 || case8) {
+  if (diagonal1 || diagonal2) {
     showWinner(getActivePlayer());
   }
 }
 
-// function isOWin() {
-//   // по горизонтали
-//   const case1 =
-//     board[0][0] === 'o' && board[0][1] === 'o' && board[0][2] === 'o';
-//   const case2 =
-//     board[1][0] === 'o' && board[1][1] === 'o' && board[1][2] === 'o';
-//   const case3 =
-//     board[2][0] === 'o' && board[2][1] === 'o' && board[2][2] === 'o';
-
-//   // по вертикали
-//   const case4 =
-//     board[0][0] === 'o' && board[1][0] === 'o' && board[2][0] === 'o';
-//   const case5 =
-//     board[0][1] === 'o' && board[1][1] === 'o' && board[2][1] === 'o';
-//   const case6 =
-//     board[0][2] === 'o' && board[1][2] === 'o' && board[2][2] === 'o';
-
-//   //по диагонали
-//   const case7 =
-//     board[0][0] === 'o' && board[1][1] === 'o' && board[2][2] === 'o';
-//   const case8 =
-//     board[2][0] === 'o' && board[1][1] === 'o' && board[0][2] === 'o';
-
-//   if (case1 || case2 || case3 || case4 || case5 || case6 || case7 || case8) {
-//     showWinner(getActivePlayer());
-//   }
-// }
-
-// let reset = document.getElementsByClassName('reset');
-
-// function resetGame() {
-//   const initBoard = [
-//     ['', '', ''],
-//     ['', '', ''],
-//     ['', '', ''],
-//   ];
-
-//   board = initBoard;
-//   renderBoard(initBoard);
-//   activePlayer = players[0];
-// }
-
-// reset[0].addEventListener('click', function (event) {
-//   resetGame();
-// });
-
-// reset[1].addEventListener('click', function (event) {
-//   resetGame();
-// });
+function isWin(player) {
+  checkRowsAndColumns(player);
+  checkDiagonals(player);
+}
